@@ -1,5 +1,5 @@
 
-which_one="casing"; //[cam, shaft, casing, cover, follower]
+which_one="casing"; //[cam, shaft, casing, cover, follower, full]
 
 
 $fn=100;
@@ -22,7 +22,7 @@ shaft_wedge                 = 1.5;  //mm
 
 case_length                 = 160;
 case_width                  = 160;
-case_wall_thickness         = 10;
+case_wall_thickness         = 15;
 case_thickness              = 25;   //5mm of wall thickness+5mm space+10mm thickness of cam+5mm space
 follower_thick_part_length  = 10;   //mm
 follower_thin_part_length   = 45;   //mm
@@ -43,6 +43,8 @@ if (which_one == "shaft")       shaft();
 if (which_one == "casing")      casing();
 if (which_one == "cover")       cover();
 if (which_one == "follower")    follower();
+if (which_one == "full")        full();
+
 
 module cam()
 {
@@ -88,7 +90,6 @@ module shaft(hole=false)
 
 module casing()
 {
-//    translate([-case_width/2, -case_length/2, -case_wall_thickness])
     translate([-case_width/2, -case_length/2, -10])
     {
         difference()
@@ -111,7 +112,7 @@ module casing()
                         for (i = [0:1])
                         {
                             translate([case_wall_thickness/(i==1?2:1) + (i==1?case_width/2:0), case_wall_thickness, 0])
-                            cube([case_width/2-case_wall_thickness*1.5, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
+ #                           cube([case_width/2-case_wall_thickness*1.5, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
                         }
                         // three slots in upper part
                         slot_width = (case_width-case_wall_thickness*4)/3;
@@ -216,7 +217,7 @@ module cover()
         
         //hole for shaft
 //        translate([case_width/2, case_length/2, 0])
-            cylinder(h = case_wall_thickness, r = shaft_radius+0.2);
+            cylinder(h = case_wall_thickness+5, r = shaft_radius+0.2);
         
         //holes for screws
 //            translate([case_width/2, case_length/2, 0])
@@ -240,4 +241,12 @@ module cover()
 
 module follower()
 {
+}
+
+module full()
+{
+    casing();
+    cam();
+    translate([0, 0, 25]) rotate([180, 0, 180]) cover();
+        
 }
