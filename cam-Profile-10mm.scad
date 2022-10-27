@@ -1,4 +1,10 @@
 
+
+include <screw_sizes.scad>
+
+
+
+
 which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, full]
 
 
@@ -29,7 +35,9 @@ follower_thin_part_length   = 35;   //mm
 
 follower_case_length        = 50;   //mm
 follower_case_width         = 22.2; //mm
-follower_case_ledge         = 4;    //mm
+follower_case_ledge         = 5;    //mm
+
+margin                      = 0.1;  //mm
 
 
 
@@ -64,19 +72,50 @@ module cam()
     points = concat( points_rise, points_fall );
 
     echo(points);
+    
 
     difference()
     {
-        linear_extrude(10)
+        union()
         {
-            union()
+            linear_extrude(10)
+            {
+                union()
+                    {
+                        polygon(points);
+                        circle(base_circle_diameter/2);
+                    }
+            }
+            //       the central round !!hub!!
+            translate([0, 0, 9])
+            difference()
                 {
-                polygon(points);
-                circle(base_circle_diameter/2);
+                  cylinder(h=5.9, d=40);
+                    translate([0, 0, 4.9])
+                        difference()
+                        {
+                           cylinder(h=1, d=36);
+                            cylinder(h=1, r = shaft_radius+0.2+2);
+            
+                        }
                 }
         }
+//        Difference Starts ###########################
+        
+//        hole for shaft
         translate([0, 0, -shaft_length/2])
             shaft(hole=true);
+        
+//        holes for grub screws
+        translate([-20, 0, 10+2]) rotate([0, 90, 0]) cylinder(h=40, d=m3_grub_screw_dia+2*margin);
+        
+//        slots for hexnut
+        for (i = [0, 1])
+        {
+            mirror([i, 0, 0])
+            translate([-9, -(m3_grub_screw_hexnut_dia+margin)/2, 10+2-(m3_grub_screw_hexnut_max_dia+margin)/2]) 
+#            cube([m3_grub_screw_hexnut_height+margin, m3_grub_screw_hexnut_dia+margin, m3_grub_screw_hexnut_max_dia+margin]);
+        }
     }
     
 //    translate([0, 0, -shaft_length/2])
@@ -100,92 +139,117 @@ module shaft(hole=false)
 
 module casing()
 {
-    translate([-case_width/2, -case_length/2, -10])
+    difference()
     {
-        difference()
+        translate([-case_width/2, -case_length/2, -10])
         {
-            union()
-            {
-                difference()
-                {
-                    union()
-                    {
-                        cube([case_width, case_length, case_thickness]);
-                        translate([case_width/2, case_length-case_wall_thickness, 15])
-                            rotate([-90, 0, 0])
-                                cylinder(h=25, d=16);
-                    }
-                    translate([case_wall_thickness ,case_wall_thickness, 5])
-                        cube([case_width-case_wall_thickness*2, case_length-case_wall_thickness*2, case_thickness-5]);
-                   
-                       //two slots in lower half
-                        for (i = [0:1])
-                        {
-                            translate([case_wall_thickness/(i==1?2:1) + (i==1?case_width/2:0), case_wall_thickness, 0])
- #                           cube([case_width/2-case_wall_thickness*1.5, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
-                        }
-                        // three slots in upper part
-                        slot_width = (case_width-case_wall_thickness*4)/3;
-                        for (i = [0:2])
-                        {
-                            translate([(slot_width)*i+case_wall_thickness*(i+1), case_wall_thickness/2+case_length/2, 0])
-                            cube([slot_width, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
-                        }
-                   
-                    
-                    
-        //            hole for the follower
-                    translate([case_width/2, case_length-case_wall_thickness, 15])
-                        rotate([-90, 0, 0])
-                            {
-        #                       cylinder(h=25, d=8.2);
-                                cylinder(h=15, d=12.2);
-                            }
-                }
-            translate([case_width/2, case_length/2, 0])
             difference()
             {
-                cylinder(h=9.9, d=40);
-                translate([0, 0, 8.9])
+                union()
+                {
                     difference()
                     {
-     #                  cylinder(h=1, d=36);
-                        cylinder(h=1, r = shaft_radius+0.2+2);
+    //                    union()
+    //                    {
+                            cube([case_width, case_length, case_thickness]);
                         
+    //                    Difference Starts #################
+    //                        translate([case_width/2, case_length-case_wall_thickness, 15])
+    //                            rotate([-90, 0, 0])
+    //                                cylinder(h=25, d=16);
+    //                    }
+                        translate([case_wall_thickness ,case_wall_thickness, 5])
+                            cube([case_width-case_wall_thickness*2, case_length-case_wall_thickness*2, case_thickness-5]);
+                       
+                           //two slots in lower half
+                            for (i = [0:1])
+                            {
+                                translate([case_wall_thickness/(i==1?2:1) + (i==1?case_width/2:0), case_wall_thickness, 0])
+     #                           cube([case_width/2-case_wall_thickness*1.5, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
+                            }
+                            // three slots in upper part
+                            slot_width = (case_width-case_wall_thickness*4)/3;
+                            for (i = [0:2])
+                            {
+                                translate([(slot_width)*i+case_wall_thickness*(i+1), case_wall_thickness/2+case_length/2, 0])
+                                cube([slot_width, case_length/2-case_wall_thickness*1.5, case_wall_thickness-10]);
+                            }
+                       
+                        
+                        
+            //            slot the follower
+    //                    translate([case_width/2, case_length-case_wall_thickness, 15])
+    //                        rotate([-90, 0, 0])
+    //                            {
+    //        #                       cylinder(h=25, d=8.2);
+    //                                cylinder(h=15, d=12.2);
+    //                            }
+                            
                     }
-            }
-            }
-            
-            //hole for shaft
-            translate([case_width/2, case_length/2, 0])
-                cylinder(h = case_wall_thickness, r = shaft_radius+0.2);
-            
-            //holes for screws
-            translate([case_width/2, case_length/2, 0])
-            for (i = [1, -1])
-            {
-                for (j = [1, -1])
+                    
+    //       the central round !!hub!!
+                translate([case_width/2, case_length/2, 0])
+                difference()
                 {
-                    //four corners
-                    translate([i*case_width/2-i*case_wall_thickness/2, j*case_length/2-j*case_wall_thickness/2, 0 ])
-#                    cylinder(h=case_thickness, d=3);
-                    //four centers
-                    if (i==1 && j==1)
-                    {
-                        for (k = [1, -1])
+                    cylinder(h=9.9, d=40);
+                    translate([0, 0, 8.9])
+                        difference()
                         {
-                            translate([k*case_width/3/2, case_length/2-case_wall_thickness/2, 0])
-#                                cylinder(h=case_thickness, d=3);
+         #                  cylinder(h=1, d=36);
+                            cylinder(h=1, r = shaft_radius+0.2+2);
+                            
                         }
-                    }
-                    else
+                }
+                }
+                
+    //                    Difference Starts #################
+                
+                //hole for shaft
+                translate([case_width/2, case_length/2, 0])
+                    cylinder(h = case_wall_thickness, r = shaft_radius+0.2);
+                
+                //holes for screws
+                translate([case_width/2, case_length/2, 0])
+                for (i = [1, -1])
+                {
+                    for (j = [1, -1])
                     {
-                        translate([(i==1?0:j*case_width/2-j*case_wall_thickness/2), (i==1?j*case_length/2-j*case_wall_thickness/2:0), 0 ])
-    #                    cylinder(h=case_thickness, d=3);
+                        //four corners
+                        translate([i*case_width/2-i*case_wall_thickness/2, j*case_length/2-j*case_wall_thickness/2, 0 ])
+                        {
+    #                       cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                            cylinder(h=5, d=m3_screw_head_dia+margin*2);
+                            translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+                        }
+                        //four centers
+                        if (i==1 && j==1)
+                        {
+                            for (k = [1, -1])
+                            {
+                                translate([k*case_width/3/2, case_length/2-case_wall_thickness/2, 0])
+                                {
+    #                                cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                                     cylinder(h=5, d=m3_screw_head_dia+margin*2);
+                                    translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            translate([(i==1?0:j*case_width/2-j*case_wall_thickness/2), (i==1?j*case_length/2-j*case_wall_thickness/2:0), 0 ])
+                            {
+        #                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                                cylinder(h=5, d=m3_screw_head_dia+margin*2);
+                                translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+                            }
+                        }
                     }
                 }
             }
         }
+//        Difference Starts#####################3
+//            slot for follower_case
+#        follower_case(true);
     }
 //    rotate([0, 0, 180])
 //    cam();
@@ -248,19 +312,19 @@ module cover()
                 {
                     //four corners
                     translate([i*case_width/2-i*case_wall_thickness/2, j*case_length/2-j*case_wall_thickness/2, 0 ])
-#                    cylinder(h=case_thickness, d=3);
+#                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
                     //four centers
                     if (i==1 && j==1)
                     {
                         for (k = [1, -1])
                         {
                             translate([k*case_width/3/2, case_length/2-case_wall_thickness/2, 0])
-#                                cylinder(h=case_thickness, d=3);
+#                                cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
                         }
                     }
                     else{
                     translate([(i==1?0:j*case_width/2-j*case_wall_thickness/2), (i==1?j*case_length/2-j*case_wall_thickness/2:0), 0 ])
-#                    cylinder(h=case_thickness, d=3);
+#                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
                     }
                 }
             }
@@ -286,7 +350,7 @@ module follower1()
     difference()
     {
         follower();
-        translate([2.5, -6, 0])    cube([3.5, 12, 50, ]);
+        translate([2.5, -6, 0])    cube([3.5, 12, follower_thick_part_length+follower_thin_part_length]);
     }
 }
 
@@ -296,29 +360,35 @@ module follower2()
     {
         follower();
 //        translate([2.5, -6, 0])    cube([3.5, 12, 50, ]);
-        translate([-6, -6, 0])    cube([8.5, 12, 50, ]);
+        translate([-6, -6, 0])    cube([8.5, 12, follower_thick_part_length+follower_thin_part_length]);
     }    
 }
 
-module follower_case()
+module follower_case(subtract=false)
 {
-    translate([-follower_case_width/2, case_length/2-case_wall_thickness, -5])
+    translate([-(follower_case_width+(subtract?margin:0))/2, case_length/2-case_wall_thickness, -5-(subtract?margin/2:0)])
     {
         difference()
         {
             union()
             {
-                cube([follower_case_width, follower_case_length, case_thickness-5]);
-                translate([-10, case_wall_thickness/2-2.5, 0])
-                    cube([follower_case_width+20, 5, case_thickness-5]);
+                cube([follower_case_width+(subtract?margin:0), follower_case_length, case_thickness-5+(subtract?margin:0)]);
+                
+//      ledge         
+//                translate([-10-(subtract?margin/4:0), case_wall_thickness/2-follower_case_ledge/2-(subtract?margin/2:0), 0])
+                translate([-7, case_wall_thickness/2-follower_case_ledge/2-(subtract?margin/2:0), 0])
+                    cube([follower_case_width+14+(subtract?margin:0), follower_case_ledge+(subtract?margin:0), case_thickness-5+(subtract?margin:0)]);
             }
             
 //            difference starts ##############################
-            translate([follower_case_width/2, 0, (case_thickness-5)/2])
-                rotate([-90, 0, 0])
+            if (!subtract)
             {
-                #cylinder(h=follower_case_length, d=8.2);
-                cylinder(h=40, d=12.2);
+                translate([follower_case_width/2, 0, (case_thickness-5)/2])
+                    rotate([-90, 0, 0])
+                {
+                    #cylinder(h=follower_case_length, d=8.2);
+                    cylinder(h=40, d=12.2);
+                }
             }
         }
     }
@@ -333,5 +403,9 @@ module full()
     cam();
     translate([0, 0, 25]) rotate([180, 0, 180]) cover();
     translate([0, 0, -10]) shaft();
+    follower_case();
+    translate([0, case_length/2-case_wall_thickness-5, 5]) rotate([-90, 0, 0]) follower();
+//    
+//    translate([0, 0, 10]) follower_case(true);
         
 }
