@@ -4,7 +4,7 @@ which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2
 
 $fn=100;
 
-total_lift                  = 20;   // mm
+total_lift                  = 10;   // mm
 base_circle_diameter        = 80;   // mm
 bottom_dwell_begin          = 0;    // degrees
 bottom_dwell_end            = 180;  //degree
@@ -20,14 +20,14 @@ shaft_length                = 50;   //mm
 shaft_radius                = 4;    //mm
 shaft_wedge                 = 1.5;  //mm
 
-case_length                 = 160;
-case_width                  = 160;
+case_length                 = 140;
+case_width                  = 140;
 case_wall_thickness         = 15;
 case_thickness              = 25;   //5mm of wall thickness+5mm space+10mm thickness of cam+5mm space
-follower_thick_part_length  = 10;   //mm
-follower_thin_part_length   = 45;   //mm
+follower_thick_part_length  = 30;   //mm
+follower_thin_part_length   = 35;   //mm
 
-follower_case_length        = 80;   //mm
+follower_case_length        = 50;   //mm
 follower_case_width         = 22.2; //mm
 follower_case_ledge         = 4;    //mm
 
@@ -275,8 +275,8 @@ module follower()
     union()
     {
         translate([0, 0, 6]) sphere(d = 12);
-        translate([0, 0, 6]) cylinder(h=10-6, d=12);
-        translate([0, 0, 6]) cylinder(h=50-6, d=8);
+        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6, d=12);
+        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6+follower_thin_part_length, d=8);
         
     }
 }
@@ -306,13 +306,18 @@ module follower_case()
     {
         difference()
         {
-            cube([follower_case_width, follower_case_length, case_thickness-5]);
+            union()
+            {
+                cube([follower_case_width, follower_case_length, case_thickness-5]);
+                translate([-10, case_wall_thickness/2-2.5, 0])
+                    cube([follower_case_width+20, 5, case_thickness-5]);
+            }
             
 //            difference starts ##############################
             translate([follower_case_width/2, 0, (case_thickness-5)/2])
                 rotate([-90, 0, 0])
             {
-                #cylinder(h=80, d=8.2);
+                #cylinder(h=follower_case_length, d=8.2);
                 cylinder(h=40, d=12.2);
             }
         }
