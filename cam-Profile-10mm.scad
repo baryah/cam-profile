@@ -316,19 +316,28 @@ module cover()
                 {
                     //four corners
                     translate([i*case_width/2-i*case_wall_thickness/2, j*case_length/2-j*case_wall_thickness/2, 0 ])
-#                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                    {
+#                       cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                        cylinder(h=m3_grub_screw_hexnut_height+margin*5, d=m3_grub_screw_hexnut_max_dia+2*margin, $fn=6);
+                    }
                     //four centers
                     if (i==1 && j==1)
                     {
                         for (k = [1, -1])
                         {
                             translate([k*case_width/3/2, case_length/2-case_wall_thickness/2, 0])
+                            {
 #                                cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                                cylinder(h=m3_grub_screw_hexnut_height+margin*5, d=m3_grub_screw_hexnut_max_dia+2*margin, $fn=6);
+                            }
                         }
                     }
                     else{
                     translate([(i==1?0:j*case_width/2-j*case_wall_thickness/2), (i==1?j*case_length/2-j*case_wall_thickness/2:0), 0 ])
-#                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                        {
+#                           cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
+                            cylinder(h=m3_grub_screw_hexnut_height+margin*5, d=m3_grub_screw_hexnut_max_dia+2*margin, $fn=6);
+                        }
                     }
                 }
             }
@@ -413,7 +422,7 @@ module handle1()
             translate([50, 0, 0]) cylinder(h=10, d=20);
         }
         
-        rotate([0, 0, 90]) shaft();
+        rotate([0, 0, 90]) shaft(true);
         
 //        grub screws
 #        translate([0, -15, 5]) rotate([-90, 0, 0]) cylinder(h=30, d=m3_grub_screw_dia+margin*2);
@@ -443,10 +452,13 @@ module handle1()
 
 module handle2()
 {
-    cylinder(d=9.9, h=4.8);
-    cylinder(d=5.8, h=6+4.8);
-    translate([0, 0, 10.4])
-        metric_thread (diameter=5.8, pitch=1, length=5, n_starts=1);
+    union()
+    {
+        cylinder(d=9.9, h=4.8);
+        cylinder(d=5.8, h=6+4.8);
+        translate([0, 0, 10.4])
+            metric_thread (diameter=5.8, pitch=1, length=5, n_starts=1);
+    }
 }
 
 module handle3()
@@ -475,7 +487,8 @@ module full()
     follower_case();
     translate([0, case_length/2-case_wall_thickness-5, 5]) rotate([-90, 0, 0]) follower();
     
-    translate([0, 0, case_thickness+5]) handle1();
+    translate([0, 0, case_thickness+5]) rotate([0, 0, 90]) handle();
+    
 //    
 //    translate([0, 0, 10]) follower_case(true);
         
