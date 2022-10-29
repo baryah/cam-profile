@@ -1,11 +1,11 @@
 
-
+use <threads.scad>
 include <screw_sizes.scad>
 
 
 
 
-which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle1, handle2, full]
+which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, full]
 
 
 $fn=100;
@@ -61,6 +61,8 @@ if (which_one == "follower2")       follower2();
 if (which_one == "follower_case")   follower_case();
 if (which_one == "handle1")         handle1();
 if (which_one == "handle2")         handle2();
+if (which_one == "handle3")         handle3();
+if (which_one == "handle")         handle();
 if (which_one == "full")            full();
 
 
@@ -403,10 +405,65 @@ module follower_case(subtract=false)
 
 module handle1()
 {
-    union()
+    difference()
     {
+        hull()
+        {
+            cylinder(h=10, d=30);
+            translate([50, 0, 0]) cylinder(h=10, d=20);
+        }
         
+        rotate([0, 0, 90]) shaft();
+        
+//        grub screws
+#        translate([0, -15, 5]) rotate([-90, 0, 0]) cylinder(h=30, d=m3_grub_screw_dia+margin*2);
+        
+//        grub screw hexnut space
+        for (i = [0,1])
+        {
+            mirror([0, i, 0])
+            {
+                translate([0, -3 - m3_grub_screw_hexnut_height/2, 5])
+                    rotate([90, 90, 0]) 
+                        cylinder(h=m3_grub_screw_hexnut_height+margin*2, d=m3_grub_screw_hexnut_max_dia+margin*2, $fn=6);
+                translate([-(m3_grub_screw_hexnut_dia+margin*2)/2, -3 -m3_grub_screw_hexnut_height*1.5-margin*2, 0 ]) 
+                    cube([m3_grub_screw_hexnut_dia+margin*2, m3_grub_screw_hexnut_height+margin*2, 5]);
+            }
+        }
+        
+//        handle space
+        translate([50, 0, 0])
+            {
+                cylinder(h=5, d=10);
+                cylinder(h=10, d=6);
+            }
     }
+}
+
+
+module handle2()
+{
+    cylinder(d=9.9, h=4.8);
+    cylinder(d=5.8, h=6+4.8);
+    translate([0, 0, 10.4])
+        metric_thread (diameter=5.8, pitch=1, length=5, n_starts=1);
+}
+
+module handle3()
+{
+        difference()
+    {
+        cylinder(h=20, d=15);
+        metric_thread (diameter=5.8+0.3, pitch=1, length=5, internal=true, n_starts=1);
+    }
+}
+
+module handle()
+{
+    handle1();
+    translate([50, 0, 0]) handle2();
+    translate([50, 0, 10.4]) handle3();
+    
 }
 
 module full()
@@ -417,6 +474,8 @@ module full()
     translate([0, 0, -10]) shaft();
     follower_case();
     translate([0, case_length/2-case_wall_thickness-5, 5]) rotate([-90, 0, 0]) follower();
+    
+    translate([0, 0, case_thickness+5]) handle1();
 //    
 //    translate([0, 0, 10]) follower_case(true);
         
