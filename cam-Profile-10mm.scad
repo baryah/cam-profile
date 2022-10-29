@@ -5,7 +5,7 @@ include <screw_sizes.scad>
 
 
 
-which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, full]
+which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle1, handle2, full]
 
 
 $fn=100;
@@ -51,15 +51,17 @@ function y(angle, base) = sin(angle)*height(angle, base);
 
 
 
-if (which_one == "cam")         cam();
-if (which_one == "shaft")       shaft();
-if (which_one == "casing")      casing();
-if (which_one == "cover")       cover();
-if (which_one == "follower")    follower();
-if (which_one == "follower1")    follower1();
-if (which_one == "follower2")    follower2();
-if (which_one == "follower_case")    follower_case();
-if (which_one == "full")        full();
+if (which_one == "cam")             cam();
+if (which_one == "shaft")           shaft();
+if (which_one == "casing")          casing();
+if (which_one == "cover")           cover();
+if (which_one == "follower")        follower();
+if (which_one == "follower1")       follower1();
+if (which_one == "follower2")       follower2();
+if (which_one == "follower_case")   follower_case();
+if (which_one == "handle1")         handle1();
+if (which_one == "handle2")         handle2();
+if (which_one == "full")            full();
 
 
 
@@ -107,14 +109,14 @@ module cam()
             shaft(hole=true);
         
 //        holes for grub screws
-        translate([-20, 0, 10+2]) rotate([0, 90, 0]) cylinder(h=40, d=m3_grub_screw_dia+2*margin);
+        translate([-20, 0, 10+1.7]) rotate([0, 90, 0]) cylinder(h=40, d=m3_grub_screw_dia+2*margin);
         
 //        slots for hexnut
         for (i = [0, 1])
         {
             mirror([i, 0, 0])
-            translate([-9, -(m3_grub_screw_hexnut_dia+margin)/2, 10+2-(m3_grub_screw_hexnut_max_dia+margin)/2]) 
-#            cube([m3_grub_screw_hexnut_height+margin, m3_grub_screw_hexnut_dia+margin, m3_grub_screw_hexnut_max_dia+margin]);
+            translate([-9, -(m3_grub_screw_hexnut_max_dia+margin)/2, 10+1.7-(m3_grub_screw_hexnut_dia+margin)/2]) 
+#            cube([m3_grub_screw_hexnut_height+margin, m3_grub_screw_hexnut_max_dia+margin, m3_grub_screw_hexnut_dia+margin]);
         }
     }
     
@@ -266,10 +268,9 @@ module cover()
             {
                 difference()
                 {
-                    union()
-                    {
+
                         cube([case_width, case_length, 10]);
-                    }
+//          Difference starts ##########################
                     //two slots in lower half
                     for (i = [0:1])
                     {
@@ -285,19 +286,20 @@ module cover()
                     }
                 }
             }
-            difference()
-            {
-                cylinder(h=9.9+5, d=40);
+//            Union @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+//            difference()
+//            {
+                cylinder(h=10, d=40);
 
-                translate([0, 0, 8.9+5])
-                    difference()
-                    {
-     #                  cylinder(h=1, d=36);
-                        cylinder(h=1, r = shaft_radius+0.2+2);
-                        
-                    }
+//                translate([0, 0, 8.9+5])
+//                    difference()
+//                    {
+//     #                  cylinder(h=1, d=36);
+//                        cylinder(h=1, r = shaft_radius+0.2+2);
+//                        
+//                    }
 
-            }
+//            }
         }
         
         //hole for shaft
@@ -395,6 +397,16 @@ module follower_case(subtract=false)
     
     
 //    casing();
+}
+
+
+
+module handle1()
+{
+    union()
+    {
+        
+    }
 }
 
 module full()
