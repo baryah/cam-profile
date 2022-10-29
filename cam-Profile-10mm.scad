@@ -222,8 +222,8 @@ module casing()
                         translate([i*case_width/2-i*case_wall_thickness/2, j*case_length/2-j*case_wall_thickness/2, 0 ])
                         {
     #                       cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
-                            cylinder(h=5, d=m3_screw_head_dia+margin*2);
-                            translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+                            cylinder(h=8, d=m3_screw_head_dia+margin*2);
+                            translate([0, 0, 8])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
                         }
                         //four centers
                         if (i==1 && j==1)
@@ -233,8 +233,8 @@ module casing()
                                 translate([k*case_width/3/2, case_length/2-case_wall_thickness/2, 0])
                                 {
     #                                cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
-                                     cylinder(h=5, d=m3_screw_head_dia+margin*2);
-                                    translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+                                     cylinder(h=8, d=m3_screw_head_dia+margin*2);
+                                    translate([0, 0, 8])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
                                 }
                             }
                         }
@@ -243,8 +243,8 @@ module casing()
                             translate([(i==1?0:j*case_width/2-j*case_wall_thickness/2), (i==1?j*case_length/2-j*case_wall_thickness/2:0), 0 ])
                             {
         #                    cylinder(h=case_thickness, d=m3_screw_dia+margin*2);
-                                cylinder(h=5, d=m3_screw_head_dia+margin*2);
-                                translate([0, 0, 5])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
+    #                            cylinder(h=8, d=m3_screw_head_dia+margin*2);
+                                translate([0, 0, 8])    cylinder(h=m3_screw_head_depth, d1=m3_screw_head_dia+2*margin, d2=m3_screw_dia+2*margin);
                             }
                         }
                     }
