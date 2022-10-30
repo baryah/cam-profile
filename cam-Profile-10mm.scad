@@ -2,17 +2,16 @@ use <roundedCube.scad>
 use <threads.scad>
 include <screw_sizes.scad>
 
-
+$fn=100;
 
 
 which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, full]
 
 
-$fn=100;
 
 total_lift                  = 10;   // mm
 base_circle_diameter        = 80;   // mm
-bottom_dwell_begin          = 0;    // degrees
+bottom_dwell_begin          = 0;    //degrees
 bottom_dwell_end            = 180;  //degree
 rise_begin                  = 180;  //degree
 rise_end                    = 267;  //degree
@@ -24,12 +23,14 @@ fall_end                    = 360;  //degree
 
 shaft_length                = 50;   //mm
 shaft_radius                = 4;    //mm
-shaft_wedge                 = 1.5;  //mm
+shaft_wedge                 = 1;  //mm
 
 case_length                 = 140;
 case_width                  = 140;
 case_wall_thickness         = 15;
 case_thickness              = 25;   //5mm of wall thickness+5mm space+10mm thickness of cam+5mm space
+follower_thin_dia           = 8;  //mm
+follower_thick_dia          = 12;   //mm
 follower_thick_part_length  = 30;   //mm
 follower_thin_part_length   = 35;   //mm
 
@@ -354,8 +355,8 @@ module follower()
     union()
     {
         translate([0, 0, 6]) sphere(d = 12);
-        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6, d=12);
-        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6+follower_thin_part_length, d=8);
+        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6, d=follower_thick_dia);
+        translate([0, 0, 6]) cylinder(h=follower_thick_part_length-6+follower_thin_part_length, d=follower_thin_dia);
         
     }
 }
@@ -387,7 +388,12 @@ module follower_case(subtract=false)
         {
             union()
             {
-                cube([follower_case_width+(subtract?margin:0), follower_case_length, case_thickness-5+(subtract?margin:0)]);
+//                cube([follower_case_width+(subtract?margin:0), follower_case_length, case_thickness-5+(subtract?margin:0)]);
+                translate([0, 0, case_thickness-5+(subtract?margin:0)])
+                    rotate([-90, 0, 0]) 
+                        roundedcube(follower_case_width+(subtract?margin:0), case_thickness-5+(subtract?margin:0), follower_case_length, 5);
+                translate([0, 0, 10])
+                    cube([follower_case_width+(subtract?margin:0), 15, 10++(subtract?margin:0)]);
                 
 //      ledge         
 //                translate([-10-(subtract?margin/4:0), case_wall_thickness/2-follower_case_ledge/2-(subtract?margin/2:0), 0])
@@ -401,8 +407,8 @@ module follower_case(subtract=false)
                 translate([follower_case_width/2, 0, (case_thickness-5)/2])
                     rotate([-90, 0, 0])
                 {
-                    #cylinder(h=follower_case_length, d=8.2);
-                    cylinder(h=40, d=12.2);
+                    #cylinder(h=follower_case_length, d=follower_thin_dia+0.2);
+                    cylinder(h=40, d=follower_thick_dia+0.2);
                 }
             }
         }
