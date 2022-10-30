@@ -1,4 +1,4 @@
-
+use <roundedCube.scad>
 use <threads.scad>
 include <screw_sizes.scad>
 
@@ -155,7 +155,8 @@ module casing()
                     {
     //                    union()
     //                    {
-                            cube([case_width, case_length, case_thickness]);
+//                            cube([case_width, case_length, case_thickness]);
+                        roundedcube(case_width, case_length, case_thickness, 5);
                         
     //                    Difference Starts #################
     //                        translate([case_width/2, case_length-case_wall_thickness, 15])
@@ -271,7 +272,8 @@ module cover()
                 difference()
                 {
 
-                        cube([case_width, case_length, 10]);
+//                        cube([case_width, case_length, 10]);
+                    roundedcube(case_width, case_length, 10, 5);
 //          Difference starts ##########################
                     //two slots in lower half
                     for (i = [0:1])
