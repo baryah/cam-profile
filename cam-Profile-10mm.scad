@@ -5,7 +5,7 @@ include <screw_sizes.scad>
 $fn=100;
 
 
-which_one="casing"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, full]
+which_one="cam"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, full]
 
 
 
@@ -118,8 +118,16 @@ module cam()
         for (i = [0, 1])
         {
             mirror([i, 0, 0])
-            translate([-9, -(m3_grub_screw_hexnut_max_dia+margin)/2, 10+1.7-(m3_grub_screw_hexnut_dia+margin)/2]) 
-#            cube([m3_grub_screw_hexnut_height+margin, m3_grub_screw_hexnut_max_dia+margin, m3_grub_screw_hexnut_dia+margin]);
+            {
+                translate([-9, -(m3_grub_screw_hexnut_max_dia+margin)/2, 10+1.7-(m3_grub_screw_hexnut_dia+margin)/2]) 
+#               cube([m3_grub_screw_hexnut_height+margin, m3_grub_screw_hexnut_max_dia+margin, m3_grub_screw_hexnut_dia+margin]);
+                
+//                groove for tightening screws
+                translate([20, 0, 10+1.7])
+                rotate([0, 90, 0])
+#               cylinder(h=17, d=6);
+                
+            }
         }
     }
     
