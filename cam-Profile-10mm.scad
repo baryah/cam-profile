@@ -480,10 +480,10 @@ module handle2()
 {
     union()
     {
-        cylinder(d=9.9, h=4.8);
-        cylinder(d=5.8, h=6+4.8);
+        cylinder(d=9.6, h=4.8);
+        cylinder(d=5.7, h=6+4.8);
         translate([0, 0, 10.4])
-            metric_thread (diameter=5.8, pitch=1, length=5, n_starts=1);
+            metric_thread (diameter=5.7, pitch=1, length=5, n_starts=1);
     }
 }
 
@@ -492,7 +492,7 @@ module handle3()
         difference()
     {
         cylinder(h=20, d=15);
-        metric_thread (diameter=5.8+0.3, pitch=1, length=5, internal=true, n_starts=1);
+        metric_thread (diameter=5.7+0.4, pitch=1, length=5, internal=true, n_starts=1);
     }
 }
 
