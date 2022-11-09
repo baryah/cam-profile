@@ -40,7 +40,7 @@ follower_case_ledge         = 5;    //mm
 
 margin                      = 0.1;  //mm
 
-step                        =1;
+step                        =0.5;
 //smaller the step smoother the Cam
 
 
