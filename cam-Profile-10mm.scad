@@ -5,7 +5,7 @@ include <screw_sizes.scad>
 $fn=100;
 
 
-which_one="cam"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, full]
+which_one="cam"; //[cam, shaft, casing, cover, follower, follower1, follower2, follower_case, handle, handle1, handle2, handle3, filler, full]
 
 
 
@@ -63,8 +63,9 @@ if (which_one == "follower_case")   follower_case();
 if (which_one == "handle1")         handle1();
 if (which_one == "handle2")         handle2();
 if (which_one == "handle3")         handle3();
-if (which_one == "handle")         handle();
+if (which_one == "handle")          handle();
 if (which_one == "full")            full();
+if (which_one == "filler")          filler();
 
 
 
@@ -416,7 +417,9 @@ module follower_case(subtract=false)
                     rotate([-90, 0, 0])
                 {
                     #cylinder(h=follower_case_length, d=follower_thin_dia+0.2);
-                    cylinder(h=40, d=follower_thick_dia+0.2);
+                    cylinder(h=37, d=follower_thick_dia+0.2);
+                    translate([0, 0, 37])
+                    cylinder(h=3, d1=follower_thick_dia+0.2, d2=follower_thin_dia+0.2);
                 }
             }
         }
@@ -426,7 +429,14 @@ module follower_case(subtract=false)
 //    casing();
 }
 
-
+module filler()
+{
+    difference()
+    {
+        cylinder(h=3-0.2, d1=follower_thick_dia, d2=follower_thin_dia);
+        cylinder(h=3, d=follower_thin_dia+0.2);
+    }
+}
 
 module handle1()
 {
@@ -470,10 +480,10 @@ module handle2()
 {
     union()
     {
-        cylinder(d=9.9, h=4.8);
-        cylinder(d=5.8, h=6+4.8);
+        cylinder(d=9.6, h=4.8);
+        cylinder(d=5.7, h=6+4.8);
         translate([0, 0, 10.4])
-            metric_thread (diameter=5.8, pitch=1, length=5, n_starts=1);
+            metric_thread (diameter=5.7, pitch=1, length=5, n_starts=1);
     }
 }
 
@@ -482,7 +492,7 @@ module handle3()
         difference()
     {
         cylinder(h=20, d=15);
-        metric_thread (diameter=5.8+0.3, pitch=1, length=5, internal=true, n_starts=1);
+        metric_thread (diameter=5.7+0.4, pitch=1, length=5, internal=true, n_starts=1);
     }
 }
 
