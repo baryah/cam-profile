@@ -1,3 +1,3 @@
-cam-Profile-10mm.scad is the main design file.
+Cam_Profile-working-model-cam-follower.scad is the main design file.
 
 Others – roundedCube.scad, threads.scad and screw_sizes.scad are library files and should idealy be placed in the library folder of openscad.
